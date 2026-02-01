@@ -1,21 +1,42 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Navbar from "./components/Navbar";
 import Background from "./components/Background";
 import Footer from "./components/Footer";
-import HomePage from "@/pages/HomePage";
-import EventsPage from "@/pages/EventsPage";
-import EventDetailsPage from "@/pages/EventDetailsPage";
-import TeamPage from "@/pages/TeamPage";
-import SchedulePage from "@/pages/SchedulePage";
-import HelpPage from "@/pages/HelpPage";
-import LegalPage from "@/pages/LegalPage";
-import AdminPage from "@/pages/AdminPage";
-import GalleryPage from "@/pages/GalleryPage";
 import { db } from "@/lib/firebase";
 import { ref, onValue } from "firebase/database";
 import { FestEvent } from "@/types";
 import { EVENTS as STATIC_EVENTS } from "@/constants";
+
+// Dynamic imports for code splitting
+const HomePage = dynamic(() => import("@/app/views/HomePage"), {
+  loading: () => <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>
+});
+const EventsPage = dynamic(() => import("@/app/views/EventsPage"), {
+  loading: () => <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>
+});
+const EventDetailsPage = dynamic(() => import("@/app/views/EventDetailsPage"), {
+  loading: () => <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>
+});
+const TeamPage = dynamic(() => import("@/app/views/TeamPage"), {
+  loading: () => <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>
+});
+const SchedulePage = dynamic(() => import("@/app/views/SchedulePage"), {
+  loading: () => <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>
+});
+const HelpPage = dynamic(() => import("@/app/views/HelpPage"), {
+  loading: () => <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>
+});
+const LegalPage = dynamic(() => import("@/app/views/LegalPage"), {
+  loading: () => <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>
+});
+const AdminPage = dynamic(() => import("@/app/views/AdminPage"), {
+  loading: () => <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>
+});
+const GalleryPage = dynamic(() => import("@/app/views/GalleryPage"), {
+  loading: () => <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>
+});
 
 export type Page =
   | "home"

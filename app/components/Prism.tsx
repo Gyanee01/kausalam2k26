@@ -2,7 +2,25 @@
 import React, { useEffect, useRef } from 'react';
 import { Renderer, Triangle, Program, Mesh } from 'ogl';
 
-const Prism = ({
+interface PrismProps {
+  height?: number;
+  baseWidth?: number;
+  animationType?: string;
+  glow?: number;
+  offset?: { x: number; y: number };
+  noise?: number;
+  transparent?: boolean;
+  scale?: number;
+  hueShift?: number;
+  colorFrequency?: number;
+  hoverStrength?: number;
+  inertia?: number;
+  bloom?: number;
+  suspendWhenOffscreen?: boolean;
+  timeScale?: number;
+}
+
+const Prism: React.FC<PrismProps> = ({
   height = 3.5,
   baseWidth = 5.5,
   animationType = 'rotate',
@@ -19,7 +37,7 @@ const Prism = ({
   suspendWhenOffscreen = false,
   timeScale = 0.5
 }) => {
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -237,7 +255,7 @@ const Prism = ({
     resize();
 
     const rotBuf = new Float32Array(9);
-    const setMat3FromEuler = (yawY, pitchX, rollZ, out) => {
+    const setMat3FromEuler = (yawY: number, pitchX: number, rollZ: number, out: Float32Array) => {
       const cy = Math.cos(yawY), sy = Math.sin(yawY);
       const cx = Math.cos(pitchX), sx = Math.sin(pitchX);
       const cz = Math.cos(rollZ), sz = Math.sin(rollZ);
@@ -275,10 +293,10 @@ const Prism = ({
 
     let yaw = 0, pitch = 0, roll = 0;
     let targetYaw = 0, targetPitch = 0;
-    const lerp_val = (a, b, t) => a + (b - a) * t;
+    const lerp_val = (a: number, b: number, t: number) => a + (b - a) * t;
 
     const pointer = { x: 0, y: 0, inside: false };
-    const onPointerMove = (e) => {
+    const onPointerMove = (e: PointerEvent) => {
       const ww = window.innerWidth;
       const wh = window.innerHeight;
       pointer.x = (e.clientX - ww * 0.5) / (ww * 0.5);
@@ -288,11 +306,11 @@ const Prism = ({
     };
 
     if (animationType === 'hover') {
-      window.addEventListener('pointermove', onPointerMove, { passive: true });
+      window.addEventListener('pointermove', onPointerMove as EventListener, { passive: true });
       program.uniforms.uUseBaseWobble.value = 0;
     }
 
-    const render = t => {
+    const render = (t: number) => {
       const time = (t - t0) * 0.001;
       program.uniforms.iTime.value = time;
 
@@ -327,7 +345,7 @@ const Prism = ({
     return () => {
       stopRAF();
       ro.disconnect();
-      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointermove', onPointerMove as EventListener);
       if (gl.canvas.parentElement === container) container.removeChild(gl.canvas);
     };
   }, [height, baseWidth, animationType, glow, noise, scale, hueShift, bloom]);

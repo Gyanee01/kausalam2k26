@@ -39,7 +39,7 @@ const HomePage: React.FC<HomePageProps> = ({ events, onExplore, onSelectEvent, o
             </div>
             <h2 className="text-5xl md:text-7xl font-black mb-8 font-space uppercase leading-[0.9] tracking-tighter">
               WHAT IS <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-500">KAUSHALAM?</span>
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-red-600 to-rose-500">KAUSHALAM?</span>
             </h2>
             <div className="space-y-6 text-gray-400 text-lg leading-relaxed mb-10 font-medium">
               <p>
@@ -69,13 +69,13 @@ const HomePage: React.FC<HomePageProps> = ({ events, onExplore, onSelectEvent, o
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="aspect-[4/5] rounded-[60px] overflow-hidden border border-white/10 relative shadow-2xl">
+            <div className="aspect-4/5 rounded-[60px] overflow-hidden border border-white/10 relative shadow-2xl">
               <img 
                 src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2070&auto=format&fit=crop" 
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
                 alt="GEC Bilaspur Campus"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent opacity-80" />
               <div className="absolute bottom-10 left-10 right-10">
                 <p className="text-white text-2xl font-black font-space uppercase">"Legacy of Excellence"</p>
                 <p className="text-red-500 text-xs font-bold uppercase tracking-widest">GEC Bilaspur Official</p>
@@ -86,7 +86,7 @@ const HomePage: React.FC<HomePageProps> = ({ events, onExplore, onSelectEvent, o
       </section>
 
       {/* 2. Respected Principal & Organising Faculties */}
-      <section className="py-32 px-6 bg-white/[0.02] border-y border-white/5">
+      <section className="py-32 px-6 bg-white/2 border-y border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-6xl font-black font-space uppercase tracking-tighter mb-4">OUR <span className="text-red-500">MENTORS</span></h2>
@@ -101,7 +101,7 @@ const HomePage: React.FC<HomePageProps> = ({ events, onExplore, onSelectEvent, o
               viewport={{ once: true }}
               className="lg:col-span-3 p-10 md:p-16 rounded-[60px] bg-white/5 border border-white/10 flex flex-col md:flex-row items-center gap-12"
             >
-              <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-red-600/30 p-2 flex-shrink-0">
+              <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-red-600/30 p-2 shrink-0">
                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" className="w-full h-full object-cover rounded-full" alt="Principal" />
               </div>
               <div className="text-center md:text-left">

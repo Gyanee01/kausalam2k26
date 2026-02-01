@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Twitter, Instagram, Globe, Mail } from 'lucide-react';
-import { TEAM_MEMBERS } from '../constants';
+import { TEAM_MEMBERS } from '@/constants';
 
 const CATEGORIES = ['All', 'Core', 'Technical', 'Cultural', 'Creative', 'Publicity', 'Operations'];
 
@@ -81,7 +81,7 @@ const TeamPage: React.FC = () => {
           transition={{ delay: 0.1 }}
           className="text-5xl md:text-9xl font-black mb-8 font-space uppercase tracking-tighter"
         >
-          MEET THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-500">TEAM</span>
+          MEET THE <span className="text-transparent bg-clip-text bg-linear-to-r from-red-600 to-rose-500">TEAM</span>
         </motion.h1>
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
@@ -124,7 +124,7 @@ const TeamPage: React.FC = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        className="mt-32 p-12 md:p-20 rounded-[60px] bg-gradient-to-br from-red-600/10 to-transparent border border-red-600/20 text-center relative overflow-hidden"
+        className="mt-32 p-12 md:p-20 rounded-[60px] bg-linear-to-br from-red-600/10 to-transparent border border-red-600/20 text-center relative overflow-hidden"
       >
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-red-600/5 rounded-full blur-[120px] -z-10" />
         <h2 className="text-4xl md:text-6xl font-black mb-6 font-space uppercase tracking-tighter">Want to join the legacy?</h2>

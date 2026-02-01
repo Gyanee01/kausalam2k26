@@ -1,10 +1,10 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { db } from '../lib/firebase';
+import { db } from '@/lib/firebase';
 import { ref, push, set, remove, update } from 'firebase/database';
 import { Plus, Trash2, Edit2, X, Save, ShieldCheck, LogIn } from 'lucide-react';
-import { FestEvent } from '../types';
+import { FestEvent } from '@/types';
 
 interface AdminPageProps {
   events: FestEvent[];
@@ -286,7 +286,7 @@ const AdminPage: React.FC<AdminPageProps> = ({ events }) => {
         {events.map((event) => (
           <div key={event.id} className="p-6 bg-white/5 border border-white/10 rounded-[32px] flex flex-col md:flex-row items-center justify-between gap-6 hover:border-white/20 transition-all">
             <div className="flex items-center gap-6 w-full md:w-auto">
-              <img src={event.image} className="w-20 h-20 rounded-2xl object-cover border border-white/10" />
+              <img src={event.image} alt={event.name} className="w-20 h-20 rounded-2xl object-cover border border-white/10" />
               <div>
                 <h3 className="text-xl font-bold font-space uppercase leading-tight">{event.name}</h3>
                 <p className="text-red-500 text-[10px] font-black uppercase tracking-widest">{event.category} • {event.gridSpan} Span</p>

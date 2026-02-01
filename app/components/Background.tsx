@@ -118,20 +118,6 @@ const Background: React.FC = () => {
       }
     };
 
-    const renderGlow = () => {
-      ctxB.save();
-      ctxB.filter = 'blur(8px) brightness(200%)';
-      ctxB.globalCompositeOperation = 'lighter';
-      ctxB.drawImage(canvasA, 0, 0);
-      ctxB.restore();
-
-      ctxB.save();
-      ctxB.filter = 'blur(4px) brightness(200%)';
-      ctxB.globalCompositeOperation = 'lighter';
-      ctxB.drawImage(canvasA, 0, 0);
-      ctxB.restore();
-    };
-
     const render = () => {
       ctxB.save();
       ctxB.globalCompositeOperation = 'lighter';
@@ -159,7 +145,6 @@ const Background: React.FC = () => {
       ctxB.fillRect(0, 0, canvasA.width, canvasA.height);
 
       drawParticles();
-      renderGlow();
       render();
 
       animationFrameId = window.requestAnimationFrame(draw);

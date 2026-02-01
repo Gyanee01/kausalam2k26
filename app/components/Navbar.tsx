@@ -39,8 +39,8 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage }) => {
       <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 px-6 py-4 ${scrolled || currentPage !== 'home' ? 'bg-black/60 backdrop-blur-xl border-b border-white/5' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => onNavigate('home')}>
-            <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-rose-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-red-500/20">
-              K
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-red-500/20">
+              <img src="/logo.webp" alt="logo" className='w-full h-full object-contain' />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-black tracking-tighter uppercase font-space leading-none">Kaushalam 2026</span>
@@ -79,7 +79,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage }) => {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-[#050505] z-[100] p-8 flex flex-col"
+            className="fixed inset-0 bg-[#050505] z-100 p-8 flex flex-col"
           >
             <div className="flex items-center justify-between mb-16">
               <div className="flex flex-col">
@@ -99,7 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage }) => {
                   transition={{ delay: idx * 0.1 }}
                   key={item.name}
                   onClick={() => handleNavClick(item)}
-                  className={`text-4xl font-black font-space text-left transition-colors ${item.active ? 'text-red-500' : 'text-white/40 hover:text-red-500'}`}
+                  className={`text-4xl font-black cursor-pointer font-space text-left transition-colors ${item.active ? 'text-red-500' : 'text-white/40 hover:text-red-500'}`}
                 >
                   {item.name}
                 </motion.button>

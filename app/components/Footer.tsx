@@ -13,8 +13,8 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="col-span-1 md:col-span-1">
           <div className="flex items-center gap-2 mb-6 cursor-pointer" onClick={() => onNavigate('home')}>
-            <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-rose-600 rounded-xl flex items-center justify-center text-white font-black text-xl">
-              K
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl">
+               <img src="/logo.webp" alt="logo" className='w-full h-full object-contain' />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-black font-space leading-none">KAUSHALAM</span>

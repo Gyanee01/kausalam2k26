@@ -2,7 +2,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, ChevronDown } from 'lucide-react';
-import PixelBlast from './PixelBlast';
+import dynamic from 'next/dynamic';
+
+const PixelBlast = dynamic(() => import('./PixelBlast'), { 
+  ssr: false,
+  loading: () => <div className="absolute inset-0 bg-[#050505]" /> 
+});
 
 interface HeroProps {
   onExplore: () => void;

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Calendar, MapPin, ArrowRight, Code, Music, Trophy, Cpu, Camera, Palette, Gamepad2, BrainCircuit } from 'lucide-react';
-import { EventCategory, FestEvent } from '../types';
+import { EventCategory, FestEvent } from '@/types';
 
 const iconMap: Record<string, any> = {
   Code, Music, Trophy, Cpu, Camera, Palette, Gamepad2, BrainCircuit

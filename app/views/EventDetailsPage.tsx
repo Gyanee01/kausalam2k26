@@ -6,7 +6,7 @@ import {
   Code, Music, Trophy, Cpu, Camera, Palette, Gamepad2, BrainCircuit,
   Trophy as PrizeIcon, Users, User
 } from 'lucide-react';
-import { FestEvent } from '../types';
+import { FestEvent } from '@/types';
 
 const iconMap: Record<string, any> = {
   Code, Music, Trophy, Cpu, Camera, Palette, Gamepad2, BrainCircuit
@@ -36,7 +36,7 @@ const EventDetailsPage: React.FC<EventDetailsPageProps> = ({ event, onBack }) =>
           alt={event.name} 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#050505] via-[#050505]/60 to-transparent" />
         
         <div className="absolute top-10 left-6 md:left-12 z-20">
           <button 
