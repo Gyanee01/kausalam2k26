@@ -1,65 +1,157 @@
-import Image from "next/image";
+"use client";
+import React, { useState, useEffect } from "react";
+import Navbar from "./components/Navbar";
+import Background from "./components/Background";
+import Footer from "./components/Footer";
+import HomePage from "@/pages/HomePage";
+import EventsPage from "@/pages/EventsPage";
+import EventDetailsPage from "@/pages/EventDetailsPage";
+import TeamPage from "@/pages/TeamPage";
+import SchedulePage from "@/pages/SchedulePage";
+import HelpPage from "@/pages/HelpPage";
+import LegalPage from "@/pages/LegalPage";
+import AdminPage from "@/pages/AdminPage";
+import GalleryPage from "@/pages/GalleryPage";
+import { db } from "@/lib/firebase";
+import { ref, onValue } from "firebase/database";
+import { FestEvent } from "@/types";
+import { EVENTS as STATIC_EVENTS } from "@/constants";
 
-export default function Home() {
+export type Page =
+  | "home"
+  | "events"
+  | "event-details"
+  | "team"
+  | "schedule"
+  | "help"
+  | "privacy"
+  | "terms"
+  | "cookies"
+  | "admin"
+  | "gallery";
+
+const App: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState<Page>("home");
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [events, setEvents] = useState<FestEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage, selectedEventId]);
+
+  useEffect(() => {
+    const eventsRef = ref(db, "events");
+    const unsubscribe = onValue(
+      eventsRef,
+      (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const fetchedEvents: FestEvent[] = Object.keys(data).map((key) => ({
+            id: key,
+            ...data[key],
+          }));
+          fetchedEvents.sort((a, b) => a.name.localeCompare(b.name));
+          setEvents(fetchedEvents);
+        } else {
+          setEvents(STATIC_EVENTS);
+        }
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching events:", error);
+        setEvents(STATIC_EVENTS);
+        setLoading(false);
+      },
+    );
+
+    return () => {};
+  }, []);
+
+  const navigateTo = (page: Page, eventId?: string) => {
+    if (eventId) {
+      setSelectedEventId(eventId);
+    }
+    setCurrentPage(page);
+  };
+
+  const selectedEvent = events.find((e) => e.id === selectedEventId);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="relative min-h-screen">
+      <Background />
+      <Navbar onNavigate={navigateTo} currentPage={currentPage} />
+
+      <main className="pt-20">
+        {currentPage === "home" && (
+          <HomePage
+            events={events}
+            onExplore={() => navigateTo("events")}
+            onSelectEvent={(id) => navigateTo("event-details", id)}
+            onSeeAll={() => navigateTo("events")}
+            onNavigate={navigateTo}
+          />
+        )}
+
+        {currentPage === "events" && (
+          <EventsPage
+            events={events}
+            onSelectEvent={(id) => navigateTo("event-details", id)}
+          />
+        )}
+
+        {currentPage === "event-details" && selectedEvent && (
+          <EventDetailsPage
+            event={selectedEvent}
+            onBack={() => navigateTo("events")}
+          />
+        )}
+
+        {currentPage === "team" && <TeamPage />}
+
+        {currentPage === "gallery" && <GalleryPage />}
+
+        {currentPage === "schedule" && <SchedulePage />}
+
+        {currentPage === "help" && <HelpPage />}
+
+        {currentPage === "admin" && <AdminPage events={events} />}
+
+        {(currentPage === "privacy" ||
+          currentPage === "terms" ||
+          currentPage === "cookies") && <LegalPage type={currentPage} />}
+
+        {/* Global Newsletter / Footer CTA */}
+        <section className="py-24 px-6 max-w-3xl mx-auto text-center">
+          <h3 className="text-3xl md:text-4xl font-black mb-6 font-space uppercase">
+            Stay In The Loop
+          </h3>
+          <p className="text-gray-400 mb-10 text-lg">
+            Subscribe to get notifications about event registrations, schedules,
+            and pro-night reveals.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <form
+            className="flex flex-col sm:flex-row gap-4"
+            onSubmit={(e) => e.preventDefault()}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="flex-1 px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-red-500 transition-colors text-white"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+            <button
+              type="submit"
+              className="px-8 py-4 bg-red-600 text-white font-black rounded-2xl hover:bg-red-500 transition-all"
+            >
+              Notify Me
+            </button>
+          </form>
+        </section>
       </main>
+
+      <Footer onNavigate={navigateTo} />
     </div>
   );
-}
+};
+
+export default App;
