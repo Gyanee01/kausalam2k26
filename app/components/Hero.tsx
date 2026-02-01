@@ -48,11 +48,11 @@ const Hero: React.FC<HeroProps> = ({ onExplore }) => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, type: "spring", stiffness: 100 }}
-          className="text-[14vw] md:text-[10vw] font-[900] leading-[0.85] tracking-tighter mb-6 font-space"
+          className="text-[14vw] md:text-[10vw] font-black leading-[0.85] tracking-tighter mb-6 font-space"
         >
           <span className="sr-only">Kaushalam 2026 GEC Bilaspur Tech Fest</span>
           KAUSHALAM <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-rose-500 to-orange-500">2026</span>
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-red-600 via-rose-500 to-orange-500">2026</span>
         </motion.h1 >
 
         <motion.p
