@@ -76,7 +76,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="flex flex-col gap-1">
           <p>&copy; 2026 Kaushalam. Hosted by GEC Bilaspur. All rights reserved.</p>
           <p className="text-[10px] tracking-widest uppercase font-bold text-gray-600">
-            Designed & Developed by <span className="text-red-500/80">Manik Chand Sahu</span>
+            Designed & Developed by <span className="text-red-500/80">Manik Chand Sahu</span> & <span className="text-red-500/80">Gyanendra Sahu</span>
           </p>
         </div>
         <button 
