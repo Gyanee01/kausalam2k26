@@ -1,5 +1,5 @@
 
-export type EventCategory = 'Technical' | 'Cultural' | 'Sports' | 'Workshops';
+export type EventCategory = 'Technical' | 'Cultural' | 'Sports' | 'Workshops' | 'Fun Events';
 
 export interface FestEvent {
   id: string;

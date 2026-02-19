@@ -8,7 +8,7 @@ const iconMap: Record<string, any> = {
   Code, Music, Trophy, Cpu, Camera, Palette, Gamepad2, BrainCircuit
 };
 
-const CATEGORIES: (EventCategory | 'All')[] = ['All', 'Technical', 'Cultural', 'Sports', 'Workshops'];
+const CATEGORIES: (EventCategory | 'All')[] = ['All', 'Technical', 'Cultural', 'Sports', 'Workshops', 'Fun Events'];
 
 interface EventsPageProps {
   events: FestEvent[];
@@ -35,7 +35,7 @@ const EventsPage: React.FC<EventsPageProps> = ({ events, onSelectEvent }) => {
           animate={{ opacity: 1, x: 0 }}
           className="text-5xl md:text-8xl font-black mb-6 font-space uppercase tracking-tighter"
         >
-          Discover <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-500">Events</span>
+          Discover <span className="text-transparent bg-clip-text bg-linear-to-r from-red-600 to-rose-500">Events</span>
         </motion.h1>
         <motion.p 
           initial={{ opacity: 0, x: -20 }}
@@ -93,7 +93,7 @@ const EventsPage: React.FC<EventsPageProps> = ({ events, onSelectEvent }) => {
               >
                 <div className="h-64 relative">
                   <img src={event.image} alt={event.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-[#050505] via-[#050505]/20 to-transparent" />
                   <div className="absolute top-4 left-4">
                     <div className="px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-bold uppercase tracking-widest text-white/80">
                       {event.category}
