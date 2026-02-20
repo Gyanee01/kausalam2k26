@@ -108,6 +108,48 @@ export const EVENTS: FestEvent[] = [
     gridSpan: 'small',
     registrationUrl: 'https://forms.gle/dummy7'
   },
+  {
+    id: '8',
+    name: 'Treasure Trail',
+    category: 'Fun Events',
+    description: 'A campus-wide clue hunt packed with twists.',
+    longDescription: 'Team up and race across checkpoints, solve riddles, and unlock bonus challenges to reach the final treasure first.',
+    date: 'March 13, 2026',
+    time: '11:30 AM',
+    venue: 'Central Lawn',
+    image: 'https://images.unsplash.com/photo-1511988617509-a57c8a288659?q=80&w=2070&auto=format&fit=crop',
+    icon: 'Trophy',
+    gridSpan: 'medium',
+    registrationUrl: 'https://forms.gle/dummy8'
+  },
+  {
+    id: '9',
+    name: 'Neon Relay',
+    category: 'Fun Events',
+    description: 'A high-energy relay with unexpected mini tasks.',
+    longDescription: 'Sprint, balance, and puzzle your way through a glow-themed relay built for speed, teamwork, and laughter.',
+    date: 'March 14, 2026',
+    time: '4:00 PM',
+    venue: 'Sports Ground',
+    image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=2070&auto=format&fit=crop',
+    icon: 'Gamepad2',
+    gridSpan: 'small',
+    registrationUrl: 'https://forms.gle/dummy9'
+  },
+  {
+    id: '10',
+    name: 'Meme Royale',
+    category: 'Fun Events',
+    description: 'Live meme-making showdown for creators.',
+    longDescription: 'Participants get surprise prompts and limited time to craft the funniest, sharpest memes in front of a live crowd.',
+    date: 'March 12, 2026',
+    time: '3:30 PM',
+    venue: 'Open Mic Arena',
+    image: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop',
+    icon: 'Palette',
+    gridSpan: 'small',
+    registrationUrl: 'https://forms.gle/dummy10'
+  },
 ];
 
 export const TEAM_MEMBERS = [

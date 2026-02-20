@@ -12,6 +12,14 @@ const iconMap: Record<string, any> = {
   Code, Music, Trophy, Cpu, Camera, Palette, Gamepad2, BrainCircuit
 };
 
+const getLiveMonthLabel = (dateText: string) => {
+  const monthMatch = dateText.match(
+    /\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/i
+  );
+  if (!monthMatch) return "LIVE SOON";
+  return `LIVE IN ${monthMatch[1].toUpperCase()}`;
+};
+
 interface EventDetailsPageProps {
   event: FestEvent;
   onBack: () => void;
@@ -19,6 +27,7 @@ interface EventDetailsPageProps {
 
 const EventDetailsPage: React.FC<EventDetailsPageProps> = ({ event, onBack }) => {
   const Icon = iconMap[event.icon] || Code;
+  const liveMonthLabel = getLiveMonthLabel(event.date);
 
   return (
     <motion.div 
@@ -57,7 +66,7 @@ const EventDetailsPage: React.FC<EventDetailsPageProps> = ({ event, onBack }) =>
               {event.category}
             </span>
             <span className="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white text-xs font-black uppercase tracking-[0.2em]">
-              LIVE IN MARCH
+              {liveMonthLabel}
             </span>
           </motion.div>
           <motion.h1 
@@ -91,7 +100,7 @@ const EventDetailsPage: React.FC<EventDetailsPageProps> = ({ event, onBack }) =>
                 </div>
                 <div>
                   <h3 className="text-lg font-black uppercase font-space tracking-widest mb-1">Event Type</h3>
-                  <p className="text-gray-400 font-medium">{event.category} Competition</p>
+                  <p className="text-gray-400 font-medium">{event.eventType || `${event.category} Competition`}</p>
                 </div>
               </div>
               <div className="p-8 rounded-[40px] bg-white/5 border border-white/10 flex items-start gap-6 group hover:border-red-500/40 transition-colors">
@@ -100,7 +109,7 @@ const EventDetailsPage: React.FC<EventDetailsPageProps> = ({ event, onBack }) =>
                 </div>
                 <div>
                   <h3 className="text-lg font-black uppercase font-space tracking-widest mb-1">Prize Pool</h3>
-                  <p className="text-gray-400 font-medium">₹25,000 + Goodies</p>
+                  <p className="text-gray-400 font-medium">{event.prizePool || "₹25,000 + Goodies"}</p>
                 </div>
               </div>
               <div className="p-8 rounded-[40px] bg-white/5 border border-white/10 flex items-start gap-6 group hover:border-red-500/40 transition-colors">
@@ -109,7 +118,7 @@ const EventDetailsPage: React.FC<EventDetailsPageProps> = ({ event, onBack }) =>
                 </div>
                 <div>
                   <h3 className="text-lg font-black uppercase font-space tracking-widest mb-1">Team Size</h3>
-                  <p className="text-gray-400 font-medium">1 - 4 Members</p>
+                  <p className="text-gray-400 font-medium">{event.teamSize || "1 - 4 Members"}</p>
                 </div>
               </div>
               <div className="p-8 rounded-[40px] bg-white/5 border border-white/10 flex items-start gap-6 group hover:border-red-500/40 transition-colors">
@@ -118,7 +127,7 @@ const EventDetailsPage: React.FC<EventDetailsPageProps> = ({ event, onBack }) =>
                 </div>
                 <div>
                   <h3 className="text-lg font-black uppercase font-space tracking-widest mb-1">Point of Contact</h3>
-                  <p className="text-gray-400 font-medium">Rahul Verma (+91 90123...)</p>
+                  <p className="text-gray-400 font-medium">{event.pointOfContact || "Rahul Verma (+91 90123...)"}</p>
                 </div>
               </div>
             </section>

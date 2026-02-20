@@ -11,6 +11,33 @@ interface GalleryPageProps {
   gallery: GalleryItem[];
 }
 
+const getYouTubeEmbedUrl = (url?: string) => {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace('www.', '');
+    let videoId = '';
+
+    if (host === 'youtu.be') {
+      videoId = parsed.pathname.slice(1);
+    } else if (host === 'youtube.com' || host === 'm.youtube.com') {
+      if (parsed.pathname === '/watch') {
+        videoId = parsed.searchParams.get('v') || '';
+      } else if (parsed.pathname.startsWith('/embed/')) {
+        videoId = parsed.pathname.split('/embed/')[1] || '';
+      } else if (parsed.pathname.startsWith('/shorts/')) {
+        videoId = parsed.pathname.split('/shorts/')[1] || '';
+      }
+    }
+
+    if (!videoId) return null;
+    return `https://www.youtube.com/embed/${videoId}`;
+  } catch {
+    return null;
+  }
+};
+
 const GalleryPage: React.FC<GalleryPageProps> = ({ gallery }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedMedia, setSelectedMedia] = useState<GalleryItem | null>(null);
@@ -69,41 +96,50 @@ const GalleryPage: React.FC<GalleryPageProps> = ({ gallery }) => {
 
       {/* Masonry Grid */}
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-        {filteredMedia.map((item, idx) => (
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.05 }}
-            className="break-inside-avoid relative rounded-[40px] overflow-hidden group cursor-pointer border border-white/5 hover:border-red-500/30 transition-all"
-            onClick={() => setSelectedMedia(item)}
-          >
-            <img src={item.url} className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 grayscale-[0.2] group-hover:grayscale-0" alt={item.title} />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-            
-            <div className="absolute top-6 left-6 flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 text-white">
-                {item.type === 'video' ? <Film size={18} /> : <ImageIcon size={18} />}
-              </div>
-              <span className="px-3 py-1.5 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-widest">{item.category}</span>
-            </div>
+        {filteredMedia.map((item, idx) => {
+          const videoEmbedUrl = item.type === 'video' ? getYouTubeEmbedUrl(item.link) : null;
 
-            <div className="absolute bottom-6 left-6 right-6">
-              <h3 className="text-xl font-black font-space text-white uppercase leading-tight mb-2">{item.title}</h3>
-              <div className="flex items-center gap-2 text-white/40 text-xs font-bold uppercase tracking-widest">
-                {item.type === 'video' ? 'Play Video' : 'View Image'} <ExternalLink size={12} />
-              </div>
-            </div>
+          return (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 }}
+              className="break-inside-avoid relative rounded-[40px] overflow-hidden group border border-white/5 hover:border-red-500/30 transition-all"
+              onClick={() => item.type === 'image' && setSelectedMedia(item)}
+            >
+              {item.type === 'video' && videoEmbedUrl ? (
+                <div className="aspect-video bg-black">
+                  <iframe
+                    src={videoEmbedUrl}
+                    title={item.title}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  />
+                </div>
+              ) : (
+                <img src={item.url} className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 grayscale-[0.2] group-hover:grayscale-0" alt={item.title} />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity pointer-events-none" />
 
-            {item.type === 'video' && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 shadow-2xl">
-                  <Play fill="currentColor" size={24} />
+              <div className="absolute top-6 left-6 flex items-center gap-2 pointer-events-none">
+                <div className="p-2 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 text-white">
+                  {item.type === 'video' ? <Film size={18} /> : <ImageIcon size={18} />}
+                </div>
+                <span className="px-3 py-1.5 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-widest">{item.category}</span>
+              </div>
+
+              <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
+                <h3 className="text-xl font-black font-space text-white uppercase leading-tight mb-2">{item.title}</h3>
+                <div className="flex items-center gap-2 text-white/40 text-xs font-bold uppercase tracking-widest">
+                  {item.type === 'video' ? 'Play Video' : 'View Image'} <ExternalLink size={12} />
                 </div>
               </div>
-            )}
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Lightbox / Modal */}
@@ -118,19 +154,36 @@ const GalleryPage: React.FC<GalleryPageProps> = ({ gallery }) => {
           >
             <div className="max-w-6xl w-full flex flex-col items-center">
               <div className="relative w-full aspect-video rounded-[60px] overflow-hidden border border-white/10 shadow-2xl">
-                <img src={selectedMedia.url} className="w-full h-full object-cover" alt={selectedMedia.title} />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                {selectedMedia.type === 'image' && (
+                  <img src={selectedMedia.url} className="w-full h-full object-cover" alt={selectedMedia.title} />
+                )}
+                <div className={`absolute inset-0 flex items-center justify-center ${selectedMedia.type === 'video' ? 'bg-black' : 'bg-black/40'}`}>
                   {selectedMedia.type === 'video' ? (
-                    <a 
-                      href={selectedMedia.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="p-10 bg-red-600 rounded-full text-white hover:scale-110 transition-transform shadow-2xl flex items-center gap-4"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Youtube size={48} />
-                      <span className="text-2xl font-black font-space uppercase">Watch on YouTube</span>
-                    </a>
+                    (() => {
+                      const embedUrl = getYouTubeEmbedUrl(selectedMedia.link);
+                      return embedUrl ? (
+                        <iframe
+                          src={embedUrl}
+                          title={selectedMedia.title}
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      ) : (
+                        <a
+                          href={selectedMedia.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-10 bg-red-600 rounded-full text-white hover:scale-110 transition-transform shadow-2xl flex items-center gap-4"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Youtube size={48} />
+                          <span className="text-2xl font-black font-space uppercase">Watch on YouTube</span>
+                        </a>
+                      );
+                    })()
                   ) : (
                     <div className="text-white text-center p-12">
                       <ImageIcon size={64} className="mx-auto mb-6 text-red-500" />

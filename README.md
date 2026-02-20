@@ -60,6 +60,7 @@
     NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
     NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
     NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://your_project_id-default-rtdb.firebaseio.com
+    UPLOADTHING_TOKEN=your_uploadthing_token
     ```
 
 4.  **Run the development server:**

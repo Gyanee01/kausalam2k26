@@ -7,6 +7,10 @@ export interface FestEvent {
   category: EventCategory;
   description: string;
   longDescription: string;
+  eventType?: string;
+  prizePool?: string;
+  teamSize?: string;
+  pointOfContact?: string;
   date: string;
   time: string;
   venue: string;
