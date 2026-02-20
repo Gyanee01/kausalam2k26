@@ -38,9 +38,37 @@ const getYouTubeEmbedUrl = (url?: string) => {
   }
 };
 
+const getYouTubeThumbnail = (url?: string) => {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace("www.", "");
+    let videoId = "";
+
+    if (host === "youtu.be") {
+      videoId = parsed.pathname.slice(1);
+    } else if (host === "youtube.com" || host === "m.youtube.com") {
+      if (parsed.pathname === "/watch") {
+        videoId = parsed.searchParams.get("v") || "";
+      } else if (parsed.pathname.startsWith("/embed/")) {
+        videoId = parsed.pathname.split("/embed/")[1] || "";
+      } else if (parsed.pathname.startsWith("/shorts/")) {
+        videoId = parsed.pathname.split("/shorts/")[1] || "";
+      }
+    }
+
+    if (!videoId) return null;
+    return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  } catch {
+    return null;
+  }
+};
+
 const GalleryPage: React.FC<GalleryPageProps> = ({ gallery }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedMedia, setSelectedMedia] = useState<GalleryItem | null>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   const filteredMedia = gallery.filter(item => 
     activeCategory === 'All' || item.category === activeCategory
@@ -97,7 +125,10 @@ const GalleryPage: React.FC<GalleryPageProps> = ({ gallery }) => {
       {/* Masonry Grid */}
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
         {filteredMedia.map((item, idx) => {
-          const videoEmbedUrl = item.type === 'video' ? getYouTubeEmbedUrl(item.link) : null;
+          const videoPreviewUrl =
+            item.type === "video"
+              ? getYouTubeThumbnail(item.link) || item.url
+              : item.url;
 
           return (
             <motion.div
@@ -106,22 +137,16 @@ const GalleryPage: React.FC<GalleryPageProps> = ({ gallery }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
               className="break-inside-avoid relative rounded-[40px] overflow-hidden group border border-white/5 hover:border-red-500/30 transition-all"
-              onClick={() => item.type === 'image' && setSelectedMedia(item)}
+              onClick={() => {
+                setSelectedMedia(item);
+                setIsVideoPlaying(false);
+              }}
             >
-              {item.type === 'video' && videoEmbedUrl ? (
-                <div className="aspect-video bg-black">
-                  <iframe
-                    src={videoEmbedUrl}
-                    title={item.title}
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  />
-                </div>
-              ) : (
-                <img src={item.url} className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 grayscale-[0.2] group-hover:grayscale-0" alt={item.title} />
-              )}
+              <img
+                src={videoPreviewUrl || item.url}
+                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 grayscale-[0.2] group-hover:grayscale-0"
+                alt={item.title}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity pointer-events-none" />
 
               <div className="absolute top-6 left-6 flex items-center gap-2 pointer-events-none">
@@ -134,7 +159,7 @@ const GalleryPage: React.FC<GalleryPageProps> = ({ gallery }) => {
               <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
                 <h3 className="text-xl font-black font-space text-white uppercase leading-tight mb-2">{item.title}</h3>
                 <div className="flex items-center gap-2 text-white/40 text-xs font-bold uppercase tracking-widest">
-                  {item.type === 'video' ? 'Play Video' : 'View Image'} <ExternalLink size={12} />
+                  {item.type === 'video' ? 'Open & Play' : 'View Image'} <ExternalLink size={12} />
                 </div>
               </div>
             </motion.div>
@@ -150,7 +175,10 @@ const GalleryPage: React.FC<GalleryPageProps> = ({ gallery }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-6 md:p-12"
-            onClick={() => setSelectedMedia(null)}
+            onClick={() => {
+              setSelectedMedia(null);
+              setIsVideoPlaying(false);
+            }}
           >
             <div className="max-w-6xl w-full flex flex-col items-center">
               <div className="relative w-full aspect-video rounded-[60px] overflow-hidden border border-white/10 shadow-2xl">
@@ -158,30 +186,51 @@ const GalleryPage: React.FC<GalleryPageProps> = ({ gallery }) => {
                   <img src={selectedMedia.url} className="w-full h-full object-cover" alt={selectedMedia.title} />
                 )}
                 <div className={`absolute inset-0 flex items-center justify-center ${selectedMedia.type === 'video' ? 'bg-black' : 'bg-black/40'}`}>
-                  {selectedMedia.type === 'video' ? (
+                  {selectedMedia.type === "video" ? (
                     (() => {
                       const embedUrl = getYouTubeEmbedUrl(selectedMedia.link);
-                      return embedUrl ? (
-                        <iframe
-                          src={embedUrl}
-                          title={selectedMedia.title}
-                          className="w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                          allowFullScreen
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      ) : (
-                        <a
-                          href={selectedMedia.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-10 bg-red-600 rounded-full text-white hover:scale-110 transition-transform shadow-2xl flex items-center gap-4"
-                          onClick={(e) => e.stopPropagation()}
+                      const thumbnailUrl = getYouTubeThumbnail(selectedMedia.link) || selectedMedia.url;
+
+                      if (isVideoPlaying && embedUrl) {
+                        return (
+                          <iframe
+                            src={`${embedUrl}?autoplay=1&rel=0`}
+                            title={selectedMedia.title}
+                            className="w-full h-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            allowFullScreen
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        );
+                      }
+
+                      return (
+                        <button
+                          className="relative w-full h-full group"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (embedUrl) setIsVideoPlaying(true);
+                          }}
                         >
-                          <Youtube size={48} />
-                          <span className="text-2xl font-black font-space uppercase">Watch on YouTube</span>
-                        </a>
+                          {thumbnailUrl ? (
+                            <img
+                              src={thumbnailUrl}
+                              className="w-full h-full object-cover"
+                              alt={selectedMedia.title}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-white/70">
+                              <Film size={56} />
+                            </div>
+                          )}
+                          <div className="absolute inset-0 bg-black/45 group-hover:bg-black/30 transition-colors" />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="p-8 bg-red-600 rounded-full text-white shadow-2xl group-hover:scale-110 transition-transform">
+                              <Play fill="currentColor" size={42} />
+                            </span>
+                          </div>
+                        </button>
                       );
                     })()
                   ) : (
@@ -195,7 +244,10 @@ const GalleryPage: React.FC<GalleryPageProps> = ({ gallery }) => {
               </div>
               <button 
                 className="mt-8 px-8 py-3 bg-white text-black font-black rounded-full uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all"
-                onClick={() => setSelectedMedia(null)}
+                onClick={() => {
+                  setSelectedMedia(null);
+                  setIsVideoPlaying(false);
+                }}
               >
                 Close Gallery
               </button>

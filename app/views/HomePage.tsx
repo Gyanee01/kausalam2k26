@@ -6,26 +6,86 @@ import {
   MessageCircle, Youtube, Instagram, Facebook, Twitter,
   Heart, Award, Star, ArrowRight, Camera, GraduationCap
 } from 'lucide-react';
-import { FestEvent } from '@/types';
+import { FestEvent, GalleryItem } from '@/types';
 import { type Page } from '@/app/ClientApp';
 import Hero from '@/app/components/Hero';
 import BentoEvents from '@/app/components/BentoEvents';
 
 interface HomePageProps {
   events: FestEvent[];
+  gallery: GalleryItem[];
   onExplore: () => void;
   onSelectEvent: (id: string) => void;
   onSeeAll?: () => void;
   onNavigate: (page: Page) => void;
 }
 
+const getYouTubeThumbnail = (url?: string) => {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace('www.', '');
+    let videoId = '';
+
+    if (host === 'youtu.be') {
+      videoId = parsed.pathname.slice(1);
+    } else if (host === 'youtube.com' || host === 'm.youtube.com') {
+      if (parsed.pathname === '/watch') {
+        videoId = parsed.searchParams.get('v') || '';
+      } else if (parsed.pathname.startsWith('/embed/')) {
+        videoId = parsed.pathname.split('/embed/')[1] || '';
+      } else if (parsed.pathname.startsWith('/shorts/')) {
+        videoId = parsed.pathname.split('/shorts/')[1] || '';
+      }
+    }
+
+    return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
+  } catch {
+    return null;
+  }
+};
+
+const isLikelyImageUrl = (url?: string) => {
+  if (!url) return false;
+  const lower = url.toLowerCase();
+  return (
+    lower.includes('img.youtube.com') ||
+    lower.includes('images.unsplash.com') ||
+    lower.endsWith('.jpg') ||
+    lower.endsWith('.jpeg') ||
+    lower.endsWith('.png') ||
+    lower.endsWith('.webp') ||
+    lower.endsWith('.gif')
+  );
+};
+
 const HomePage: React.FC<HomePageProps> = ({
   events,
+  gallery,
   onExplore,
   onSelectEvent,
   onSeeAll,
   onNavigate,
 }) => {
+  const fallbackGallery = [
+    { type: 'video', url: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop', title: 'Kaushalam 2K25 Vlog' },
+    { type: 'image', url: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop', title: 'Cultural Night GEC' },
+    { type: 'image', url: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2069&auto=format&fit=crop', title: 'Tech Expo Hall' }
+  ];
+  const teaserGallery = gallery.length > 0
+    ? gallery.slice(0, 3).map((item) => ({
+        type: item.type,
+        title: item.title,
+        url: item.type === 'video'
+          ? getYouTubeThumbnail(item.link || item.url) ||
+            (isLikelyImageUrl(item.url) ? item.url : null) ||
+            'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop'
+          : item.url ||
+            'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop',
+      }))
+    : fallbackGallery;
+
   return (
     <div className="overflow-hidden">
       <Hero onExplore={onExplore} />
@@ -159,11 +219,7 @@ const HomePage: React.FC<HomePageProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
-          {[
-            { type: 'video', url: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop', title: 'Kaushalam 2K25 Vlog' },
-            { type: 'image', url: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop', title: 'Cultural Night GEC' },
-            { type: 'image', url: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2069&auto=format&fit=crop', title: 'Tech Expo Hall' }
-          ].map((item, i) => (
+          {teaserGallery.map((item, i) => (
             <motion.div 
               key={i}
               initial={{ opacity: 0, scale: 0.95 }}

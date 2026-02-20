@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:schedule": "bash -lc 'set -a; source .env; set +a; node scripts/seed-mock-schedule.mjs'"
   },
   "dependencies": {
     "@uploadthing/react": "^7.0.0",

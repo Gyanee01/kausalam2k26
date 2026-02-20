@@ -182,6 +182,7 @@ const ClientApp: React.FC<ClientAppProps> = ({ initialPage = "home", initialEven
         {currentPage === "home" && (
           <HomePage
             events={events}
+            gallery={gallery}
             onExplore={() => navigateTo("events")}
             onSelectEvent={(id) => navigateTo("event-details", id)}
             onSeeAll={() => navigateTo("events")}
