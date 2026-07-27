@@ -3,7 +3,25 @@ import { EVENTS } from "@/constants";
 
 const baseUrl = "https://kaushalam2k26.vercel.app";
 
+export default function sitemap(): MetadataRoute.Sitemap {
+  const staticRoutes: MetadataRoute.Sitemap = [
+    "",
+    "/events",
+    "/team",
+    "/schedule",
+    "/gallery",
+    "/help",
+    "/privacy",
+    "/terms",
+    "/cookies",
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: route === "" ? 1.0 : 0.8,
+  }));
 
+  /**
    * IMPORTANT:
    * Only include event routes IF they are real, server-addressable URLs.
    * If events are client-side state only, DO NOT include them yet.
